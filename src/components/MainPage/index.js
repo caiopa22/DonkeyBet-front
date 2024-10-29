@@ -205,7 +205,6 @@ export default function MainPage() {
                                 backgroundColor: !isLogged && 'rgb(150, 64, 78)', // Set background color conditionally
                                 backgroundColor: isFlipping && 'rgb(150, 64, 78)', // Set background color conditionally
                             }}
-                            
                             title={!isLogged ? "Você precisa estar logado para acessar esta área" : ""}
                             onClick={!isFlipping ? () => flipCoin() : null}
                             >
