@@ -201,11 +201,14 @@ export default function MainPage() {
                         <div
                             style={{
                                 cursor: !isLogged && 'not-allowed', // Set cursor style conditionally
+                                cursor: isFlipping && 'not-allowed',
                                 backgroundColor: !isLogged && 'rgb(150, 64, 78)', // Set background color conditionally
+                                backgroundColor: isFlipping && 'rgb(150, 64, 78)', // Set background color conditionally
                             }}
+                            
                             title={!isLogged ? "Você precisa estar logado para acessar esta área" : ""}
-                            onClick={() => flipCoin()}
-                        >
+                            onClick={!isFlipping ? () => flipCoin() : null}
+                            >
                             <h1>GIRAR MOEDA</h1>
                         </div>
                     </div>

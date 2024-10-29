@@ -156,7 +156,6 @@ export default function RegisterComponent({ setOpenRegisterComponent, openRegist
     }
 
 
-
     useEffect(() => {
         console.log(formData)
     }, [formData])
