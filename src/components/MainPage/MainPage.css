@@ -1,0 +1,488 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 0.15vw solid #20364B;
+    padding: 1vw 6vw;
+    height: 5vh;
+
+    /* Logo div */
+    >div:nth-of-type(1) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        gap: 0.75vw;
+
+        img {
+            width: 2.5vw;
+            height: 2.5vw;
+        }
+
+        h1 {
+            color: white;
+            font: normal 1.5vw "Sofia Sans";
+        }
+        
+        h2 {
+            color: white;
+            font: normal 1.25vw "Sofia Sans";
+
+            strong {
+                color: #F12C4C;
+            }
+        }
+    }
+
+    .login-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1vw;
+
+
+        p {
+            color: white;
+            font: bold 1vw "Sofia Sans";
+            padding: 0.25vw 0.5vw;
+            border-radius: 0.25vw;
+            transition: 0.25s;
+
+            &:hover {
+                cursor: pointer;
+                background-color: rgba(255, 255, 255, 0.24);
+                transition: 0.25s;
+            }
+        }
+
+
+        /* Register div */
+        >div:nth-of-type(1) {
+            background-color: #F12C4C;
+            border-radius: 0.25vw;
+
+            h1 {
+                color: white;
+                font: bold 1vw "Sofia Sans";
+                padding: 0.5vw 0.75vw;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: #814650;
+                transition: 0.25s;
+            }
+        }
+    }
+
+    .logged-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1vw;
+
+        >img:first-child {
+            width: 1vw;
+            height: 1vw;
+        }
+
+        h1 {
+            color: white;
+            font: normal 1.25vw "Sofia Sans";
+        }
+
+        img {
+            width: 2vw;
+            height: 2vw;
+            border-radius: 10vw;
+        }
+    }
+}
+
+
+.container-content {
+    height: 90.5vh;
+    display: flex;
+
+    /*Side Bar*/
+    .container-sidebar {
+        width: 10%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1vw 2.5vw 1vw 6vw;
+        width: 15%;
+
+        div {
+
+            ul li {
+                display: flex;
+                font-family: "Sofia Sans";
+                font-size: 1.1vw;
+                gap: 20px;
+                color: white;
+                font-weight: 600;
+                margin: 3vh 0;
+
+                img {
+                    width: 1.3vw;
+                    object-fit: contain;
+                }
+            }
+
+            h1 {
+                font-family: "Sofia Sans";
+                color: white;
+                font-size: 1.4vw;
+                font-weight: 600;
+            }
+
+        }
+
+        div:nth-of-type(2) {
+
+            h1 {
+                color: #20364B;
+            }
+
+            p {
+                color: #20364B;
+            }
+        }
+    }
+
+    /*Game*/
+    .container-game {
+        width: 100%;
+        max-height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .coinflip-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 0.7vw;
+            margin: 1.5vw 6vw;
+
+
+
+            /* Game section */
+            >section:nth-of-type(1) {
+                margin-top: 5vw;
+
+                background-color: #2D3F52;
+                display: flex;
+                padding: 2vw;
+                width: 60vw;
+                border-radius: 0.5vw;
+                justify-content: space-between;
+
+
+                /* Coin div */
+                >div:nth-of-type(1) {
+                    width: 35vw;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 2.5vw;
+
+                    h1 {
+                        font: bolder 1.5vw "Sofia Sans";
+                        color: white;
+                        width: 100%;
+                        text-align: center;
+                    }
+
+                    img {
+                        width: 17vw;
+                        height: 17vw;
+                    }
+                }
+
+                /* Inputs div */
+                >div:nth-of-type(2) {
+                    background-color: #0F1923;
+                    padding: 2vw 2vw;
+                    width: 15vw;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5vw;
+                    border-radius: 0.75vw;
+
+                    /* Select side of coin */
+                    >div:nth-of-type(1) {
+                        display: flex;
+                        justify-content: space-between;
+                        height: 2.1vw;
+                        div {
+                            position: relative;
+                            border-radius: 0.25vw;
+                            height: 2vw;
+                            width: 7vw;
+                            background-color: white;
+                        }
+
+                        >div:first-child {
+                            background-color: #8388A1;
+                            transition: 0.25s;
+
+
+                            &:hover {
+                                transition: 0.25s;
+                                cursor: pointer;
+                                background-color: #636679;
+                            }
+                        }
+
+                        >div:last-child {
+                            background-color: #DAA035;
+                            transition: 0.25s;
+
+                            &:hover {
+                                transition: 0.25s;
+                                cursor: pointer;
+                                background-color: #9c7325;
+                            }
+                        }
+                    }
+
+                    /* Amount to bet*/
+                    >div:nth-of-type(2) {
+                        background-color: #293743;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 0.5vw 0.75vw;
+                        border: 0.15vw solid #576877;
+                        border-radius: 0.25vw;
+                        height: 2.5vw;
+
+                        >:nth-of-type(1) {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.5vw;
+
+                            h1 {
+                                font: normal 0.75vw "Sofia Sans";
+                                color: #576877;
+                            }
+
+                            >div:nth-of-type(1) {
+                                display: flex;
+                                gap: 0.25vw;
+
+                                p {
+                                    font: bolder 1vw "Sofia Sans";
+                                    color: white;
+                                }
+
+                                input {
+                                    background: none;
+                                    border: none;
+                                    font: bolder 1vw "Sofia Sans";
+                                    color: white;
+                                    width: 50%;
+
+
+                                    &:focus {
+                                        outline: none;
+                                        box-shadow: none;
+                                        border: none;
+                                    }
+                                }
+                            }
+                        }
+
+
+                        >:nth-of-type(2) {
+                            border: 0.15vw solid #576877;
+                            padding: 0.4vw 0.6vw;
+                            border-radius: 0.25vw;
+                            transition: 0.25s;
+
+                            h2 {
+                                font: bolder 1vw "Sofia Sans";
+                                color: white;
+                            }
+
+                            &:hover {
+                                cursor: pointer;
+                                transition: 0.25s;
+                                background-color: #20364B;
+                            }
+                        }
+                    }
+
+                    /* Multiplier */
+                    >div:nth-of-type(3) {
+                        background-color: #293743;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5vw;
+                        padding: 0.5vw 0.75vw;
+                        border: 0.15vw solid #576877;
+                        border-radius: 0.25vw;
+                        height: 2.5vw;
+
+                        h1 {
+                            font: normal 0.75vw "Sofia Sans";
+                            color: #576877;
+                        }
+
+                        >:nth-of-type(1) {
+                            display: flex;
+                            gap: 0.25vw;
+
+                            /* INPUT RADIO CSS AQUI */
+
+                            h2 {
+                                font: bolder 0.9vw "Sofia Sans";
+                                color: white;
+                            }
+                        }
+
+
+                    }
+
+                    /* Amount received*/
+                    >div:nth-of-type(4) {
+                        background-color: #293743;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5vw;
+                        justify-content: center;
+                        padding: 0.5vw 0.75vw;
+                        border: 0.15vw solid #576877;
+                        border-radius: 0.25vw;
+                        height: 2.5vw;
+
+                        h1 {
+                            font: normal 0.75vw "Sofia Sans";
+                            color: #576877;
+                        }
+
+                        p {
+                            font: bolder 1vw "Sofia Sans";
+                            color: white;
+                            max-width: 80%;
+                            /* Set your desired max width */
+                            white-space: nowrap;
+                            /* Prevents text from wrapping */
+                            overflow: hidden;
+                            /* Hides overflowing text */
+                            text-overflow: ellipsis;
+                            /* Displays ellipsis when text is truncated */
+                        }
+                    }
+
+                    /* Flip coin */
+                    >div:nth-of-type(5) {
+                        transition: 0.25s;
+                        background-color: #F12C4C;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0.75vw 0;
+                        border-radius: 0.25vw;
+
+                        h1 {
+                            font: bolder 1.25vw "Sofia Sans";
+                            color: white;
+                        }
+
+                        &:hover {
+                            cursor: pointer;
+                            background-color: rgb(150, 64, 78);
+                            transition: 0.25s;
+                        }
+                    }
+                }
+
+
+            }
+
+            /* Game info section */
+            >section:nth-of-type(2) {
+                background-color: #2D3F52;
+                display: flex;
+                flex-direction: column;
+                border-radius: 0.5vw;
+                width: 60vw;
+
+                padding: 1vw 2vw;
+
+                >div:nth-of-type(1) {
+                    border-bottom: 0.2vw solid #F12C4C;
+                    width: fit-content;
+                    padding-bottom: 0.5vw;
+
+                    h1 {
+                        font: bolder 1vw "Sofia Sans";
+                        color: white;
+                    }
+                }
+
+                >div:nth-of-type(2) {
+                    margin-top: 0.5vw;
+                    display: flex;
+                    gap: 1vw;
+
+
+                    img {
+                        width: 8.7vw;
+                        height: 10vw;
+                        border-radius: 0.5vw;
+                    }
+
+                    >div:nth-of-type(1) {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1vw;
+
+                        >div:nth-of-type(1) {
+                            display: flex;
+                            gap: 1vw;
+
+                            >div:nth-of-type(1),
+                            >div:nth-of-type(2) {
+                                padding: 0.25vw 1vw;
+                                border: 0.2vw solid #F12C4C;
+                                border-radius: 0.25vw;
+
+                                h1 {
+                                    font: bolder 1vw "Sofia Sans";
+                                    color: white;
+                                }
+                            }
+
+                        }
+
+                        >div:nth-of-type(2) {
+                            p {
+                                font: normal 1.1vw "Sofia Sans";
+                                color: white;
+                                text-align: justify;
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+
+
+@keyframes flip {
+    0% { transform: rotateY(0); }
+    100% { transform: rotateY(360deg); }
+}
+
+.coin-flip {
+    animation: flip 3s ease-in-out;
+}

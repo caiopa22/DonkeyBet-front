@@ -1,0 +1,145 @@
+.register-component-container {
+    z-index: 2;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px); 
+
+    form {
+        position: relative;
+        background-color: #1A242D;
+        padding: 3vw 4vw;
+        border-radius: 0.5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1.5vw;
+
+        /* Top div */
+        >div:nth-of-type(1){
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            h1 {
+                font: bolder 2vw "Sofia Sans";
+                color: white;
+            }
+
+            p {
+                font: normal 1.25vw "Sofia Sans";
+                color: white;
+
+                strong {
+                    font-weight: normal;
+                    color: #F12C4C;
+                }
+            }
+        }
+
+        /* Inputs div */
+        >div:nth-of-type(2){
+            display: flex;
+            flex-direction: column;
+            gap: 1vw;
+        }
+
+        /* Register */
+        >div:nth-of-type(3){
+            background-color: #F12C4C;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 10vw;
+            padding: 0.75vw;
+            border-radius: 0.5vw;
+            transition: 0.25s;
+
+            h1 {
+                font: bolder 1.25vw "Sofia Sans";
+                color: white;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: #814650;
+                transition: 0.25s;
+            }
+        }
+
+        >div:nth-of-type(4){
+            position: absolute;
+            top: 1vw;
+            right: 1vw;
+            cursor: pointer;
+            transition: 0.25s;
+
+            img {
+                transition: 0.25s;
+                width: 1.25vw;
+                height: 1.25vw;
+
+                &:hover {
+                    transition: 0.25s;
+                    transform: scale(1.1);
+                }
+            }
+
+
+        }
+    }
+}
+
+.default-register-component-input{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vw;
+    width: 20vw;
+
+    label {
+        font: 600 0.8vw "Sofia Sans";
+        color: white;
+    }
+
+    >div:nth-of-type(1){
+        display: flex;
+        gap: 1vw;
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        input {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            width: 1vw;
+        }
+    }
+
+    input {
+        background: none;
+        border: 0.1vw solid #ABABAB;
+        height: 2.5vw;
+        border-radius: 0.25vw;
+        text-indent: 0.5vw;
+
+        color: #ffffff;
+        font: 400 0.9vw "Sofia Sans";
+
+
+        &:focus {
+            border: 0.1vw solid #F12C4C;
+            outline: 0.1vw solid #F12C4C;
+            box-shadow: none;
+        }
+    }
+}
