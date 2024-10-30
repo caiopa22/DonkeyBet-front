@@ -21,7 +21,6 @@ export default function LoginComponent({ openLoginComponent, setOpenLoginCompone
             let error = false;
 
             if (data.email === '') {
-            console.log("chegou")
             setIsAnError(true);
                 setAlertMessage("E-mail não pode ser vazio")
                 setShowAlertBox(true)
@@ -29,7 +28,6 @@ export default function LoginComponent({ openLoginComponent, setOpenLoginCompone
             }
 
             if (data.password === '') {
-                console.log("chegou")
                 setIsAnError(true);
                 setAlertMessage("Senha não pode ser vazia")
                 setShowAlertBox(true)
@@ -37,7 +35,6 @@ export default function LoginComponent({ openLoginComponent, setOpenLoginCompone
             }
 
             if (!error) {
-            console.log("chegou")
             return true;
             }
         }
@@ -47,9 +44,9 @@ export default function LoginComponent({ openLoginComponent, setOpenLoginCompone
 
             axios.post("http://localhost:8080/users/login", loginData)
             .then(response => {
-                console.log("Resposta : ", response.data)
-                setProfile(response.data)
-                setIsLogged(true)
+                const user = response.data
+                localStorage.setItem("userId", user.id)
+                window.location.reload();
                 setOpenLoginComponent(!openLoginComponent)
 
 

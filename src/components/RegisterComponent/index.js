@@ -38,7 +38,6 @@ export default function RegisterComponent({ setOpenRegisterComponent, openRegist
         const verifyRegister = (data) => {
             let error = false;
 
-            console.log(calculateAge(data.birthdate))
 
 
             if (data.name === '') {
@@ -141,10 +140,10 @@ export default function RegisterComponent({ setOpenRegisterComponent, openRegist
 
             axios.post("http://localhost:8080/users", dataToSend)
                 .then(response => {
-                    setProfile(response.data)
-                    setIsLogged(true)
+                    const user = response.data
+                    localStorage.setItem("userId", user.id)
+                    window.location.reload();
                     setOpenRegisterComponent(!openRegisterComponent)
-
                 })
                 .catch(error => {
                     console.log("Erro ao fazer a requisição do resultado de registro :", error.message)
@@ -156,9 +155,6 @@ export default function RegisterComponent({ setOpenRegisterComponent, openRegist
     }
 
 
-    useEffect(() => {
-        console.log(formData)
-    }, [formData])
 
     // Função para atualizar os estados conforme o usuário digita
     const handleInputChange = (e) => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./MainPage.css";
 import RegisterComponent from "../RegisterComponent";
 import LoginComponent from "../LoginComponent";
+import axios from "axios";
 import AlertBox from "../AlertBox";
 
 
@@ -20,7 +21,6 @@ export default function MainPage() {
     const [multiplier, setMultiplier] = useState(2)
     const [openRegisterComponent, setOpenRegisterComponent] = useState(false);
     const [openLoginComponent, setOpenLoginComponent] = useState(false);
-
 
     // User profile usestate
     const [profile, setProfile] = useState({
@@ -42,15 +42,29 @@ export default function MainPage() {
     }, [amountBetted, multiplier]);
 
     useEffect(() => {
-        if (isLogged) {
-            setIsAnError(false);
-            setAlertMessage("Login efetuado com sucesso")
-            setShowAlertBox(true)
 
-            localStorage.setItem("userId", profile.id)
+
+        if (localStorage.getItem("userId") != null){
+
+            let userId = localStorage.getItem("userId")
+
+            axios.get(`http://localhost:8080/users/${userId}`)
+            .then(response => {
+                setProfile(response.data)
+                setIsLogged(true)
+
+            })
+            .catch(error => {
+                console.log("Erro ao fazer a requisição do resultado de login :", error.message)
+                setIsAnError(true);
+                setAlertMessage("Usuário não encontrado")
+                setShowAlertBox(true)
+                setIsLogged(false)
+            })
+        } else {
+            setIsLogged(false)
         }
-    }, [isLogged])
-
+    }, [])
 
     const handleCoinSideChange = (side) => {
         setIsFlipping(true);
@@ -104,7 +118,7 @@ export default function MainPage() {
         return (
             <div className="logged-header">
                 <img src="imgs/plus-icon.png" />
-                <h1>R$ {profile.balance}</h1>
+                <h1>R$ {formatNumber(profile.balance)}</h1>
                 <img src="imgs/profile-pic.png" />
             </div>
         )
@@ -112,29 +126,65 @@ export default function MainPage() {
 
     const coinflipGame = () => {
 
-        function flipCoin(){
-            
-            let userNumber = Math.floor((Math.random() * 10) + 1);
-            let odds = Number.parseInt(multiplier) + 3;
+        function registerBet(amount, odds, payout){
 
-            if (userNumber >= odds){
-                handleCoinSideChange(selectedCoinSide)
-                setIsAnError(false);
-                setShowAlertBox(true)
-
-            } else {
-                if (selectedCoinSide === 'silver'){
-                    handleCoinSideChange('gold')
-                }
-                if (selectedCoinSide === 'gold'){
-                    handleCoinSideChange('silver')
-                }
-                setIsAnError(false);
-                setShowAlertBox(true)
+            const bet = {
+                "user_id" : profile.id,
+                "amount" : amount,
+                "odds" : odds,
+                "payout" : payout
             }
+
+            console.log(bet)
+
+            axios.post(`http://localhost:8080/bets`, bet)
+            .then(response => {
+                console.log(response.status)                
+            })
+            .catch(error => {
+                console.log("Erro ao fazer a requisição de apostas :", error.message)
+            })
 
         }
 
+        function flipCoin() {
+            setIsFlipping(true);
+            profile.balance = parseFloat(profile.balance) - parseFloat(amountBetted);
+        
+            setTimeout(() => {
+                let userNumber = Math.floor((Math.random() * 10) + 1);
+                let odds = Number.parseInt(multiplier) + 3;
+        
+                if (userNumber >= odds) {
+                    handleCoinSideChange(selectedCoinSide);
+
+                    const win = parseFloat(profile.balance) + parseFloat(amountReceived)
+                    profile.balance = win;
+
+                    registerBet(amountBetted, odds, parseFloat(amountReceived.replace(",", ".")))
+                
+                    setIsAnError(false);
+                    setShowAlertBox(true);
+                    setAlertMessage(`Você ganhou R$${amountReceived}!`)
+
+
+                } else {
+                    if (selectedCoinSide === 'silver') {
+                        handleCoinSideChange('gold');
+                    } else {
+                        handleCoinSideChange('silver');
+                    }
+
+                    registerBet(amountBetted, odds, amountBetted - (amountBetted* 2))
+
+                    setShowAlertBox(true);
+                    setIsAnError(true);
+                    setAlertMessage(`Você perdeu R$${formatNumber(amountBetted)}!`)
+                }
+        
+                setIsFlipping(false);
+            }, 3000); 
+        }
 
         return (
             <main className="coinflip-container">
@@ -149,12 +199,21 @@ export default function MainPage() {
                     <div>
                         <div>
                             <div
-                                style={selectedCoinSide === 'silver' ? { border: '0.15vw solid #636679' } : {}}
-                                onClick={() => setSelectedCoinSide('silver')}
+                                style={{
+                                    border: selectedCoinSide === 'silver' ? '0.15vw solid #636679' : null,
+                                    cursor: isFlipping && 'not-allowed',
+                                    backgroundColor: isFlipping ? "#636679" : "#8388A1"
+                                }}
+                                onClick={!isFlipping ? () => setSelectedCoinSide('silver') : null}
+
                             />
                             <div
-                                style={selectedCoinSide === 'gold' ? { border: '0.15vw solid #9c7325' } : {}}
-                                onClick={() => setSelectedCoinSide('gold')}
+                                style={{
+                                    border: selectedCoinSide === 'gold' ? '0.15vw solid #9c7325' : null,
+                                    cursor: isFlipping && 'not-allowed',
+                                    backgroundColor: isFlipping ? "#9c7325" : "#DAA035"
+                                }}
+                                onClick={!isFlipping ? () => setSelectedCoinSide('gold') : null}
                             />
                         </div>
                         <div>
@@ -200,14 +259,12 @@ export default function MainPage() {
 
                         <div
                             style={{
-                                cursor: !isLogged && 'not-allowed', // Set cursor style conditionally
-                                cursor: isFlipping && 'not-allowed',
-                                backgroundColor: !isLogged && 'rgb(150, 64, 78)', // Set background color conditionally
-                                backgroundColor: isFlipping && 'rgb(150, 64, 78)', // Set background color conditionally
+                                cursor: !isLogged || isFlipping ? 'not-allowed' : 'pointer', // Set cursor style conditionally
+                                backgroundColor: !isLogged || isFlipping && 'rgb(150, 64, 78)', // Set background color conditionally
                             }}
                             title={!isLogged ? "Você precisa estar logado para acessar esta área" : ""}
-                            onClick={!isFlipping ? () => flipCoin() : null}
-                            >
+                            onClick={!isLogged ? null : () => flipCoin()}
+                        >
                             <h1>GIRAR MOEDA</h1>
                         </div>
                     </div>

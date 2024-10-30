@@ -7,7 +7,6 @@ export default function AlertBox({ alertMessage, isAnError, showAlertBox, setSho
 
         setTimeout(() => {
             setShowAlertBox(false)
-            console.log(showAlertBox)
         }, 5000);
     }, [showAlertBox])
 
