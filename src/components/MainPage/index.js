@@ -42,29 +42,31 @@ export default function MainPage() {
     }, [amountBetted, multiplier]);
 
     useEffect(() => {
-
-
-        if (localStorage.getItem("userId") != null){
+        if (localStorage.getItem("userId") != null) {
 
             let userId = localStorage.getItem("userId")
 
             axios.get(`http://localhost:8080/users/${userId}`)
-            .then(response => {
-                setProfile(response.data)
-                setIsLogged(true)
+                .then(response => {
+                    setProfile(response.data)
+                    setIsLogged(true)
 
-            })
-            .catch(error => {
-                console.log("Erro ao fazer a requisição do resultado de login :", error.message)
-                setIsAnError(true);
-                setAlertMessage("Usuário não encontrado")
-                setShowAlertBox(true)
-                setIsLogged(false)
-            })
+                })
+                .catch(error => {
+                    console.log("Erro ao fazer a requisição do resultado de login :", error.message)
+                    setIsAnError(true);
+                    setAlertMessage("Usuário não encontrado")
+                    setShowAlertBox(true)
+                    setIsLogged(false)
+                })
         } else {
             setIsLogged(false)
         }
     }, [])
+
+    useEffect(() => {
+        console.log("amountBetted :", amountBetted)
+    }, [amountBetted])
 
     const handleCoinSideChange = (side) => {
         setIsFlipping(true);
@@ -126,35 +128,53 @@ export default function MainPage() {
 
     const coinflipGame = () => {
 
-        function registerBet(amount, odds, payout){
+        function registerBet(amount, odds, payout) {
 
             const bet = {
-                "user_id" : profile.id,
-                "amount" : amount,
-                "odds" : odds,
-                "payout" : payout
+                "user_id": profile.id,
+                "amount": amount,
+                "odds": odds,
+                "payout": payout
             }
 
             console.log(bet)
 
             axios.post(`http://localhost:8080/bets`, bet)
-            .then(response => {
-                console.log(response.status)                
-            })
-            .catch(error => {
-                console.log("Erro ao fazer a requisição de apostas :", error.message)
-            })
+                .then(response => {
+                    console.log("Resposta bets : ", response.status)
+                })
+                .catch(error => {
+                    console.log("Erro ao fazer a requisição de apostas :", error.message)
+                })
+
+        }
+
+        function updateUserBalance(amount) {
+            const data = {
+                "id": profile.id,
+                "amount": amount
+            }
+
+            axios.put(`http://localhost:8080/users/balance`, data)
+                .then(response => {
+                    console.log("Resposta balance : ", response.status)
+                })
+                .catch(error => {
+                    console.log("Erro ao fazer a requisição de apostas :", error.message)
+                })
+
 
         }
 
         function flipCoin() {
+            
             setIsFlipping(true);
             profile.balance = parseFloat(profile.balance) - parseFloat(amountBetted);
-        
+
             setTimeout(() => {
                 let userNumber = Math.floor((Math.random() * 10) + 1);
                 let odds = Number.parseInt(multiplier) + 3;
-        
+
                 if (userNumber >= odds) {
                     handleCoinSideChange(selectedCoinSide);
 
@@ -162,7 +182,8 @@ export default function MainPage() {
                     profile.balance = win;
 
                     registerBet(amountBetted, odds, parseFloat(amountReceived.replace(",", ".")))
-                
+                    updateUserBalance(win);
+
                     setIsAnError(false);
                     setShowAlertBox(true);
                     setAlertMessage(`Você ganhou R$${amountReceived}!`)
@@ -175,15 +196,16 @@ export default function MainPage() {
                         handleCoinSideChange('silver');
                     }
 
-                    registerBet(amountBetted, odds, amountBetted - (amountBetted* 2))
+                    registerBet(amountBetted, odds, amountBetted - (amountBetted * 2))
+                    updateUserBalance(profile.balance);
 
                     setShowAlertBox(true);
                     setIsAnError(true);
                     setAlertMessage(`Você perdeu R$${formatNumber(amountBetted)}!`)
                 }
-        
+
                 setIsFlipping(false);
-            }, 3000); 
+            }, 3000);
         }
 
         return (
@@ -230,8 +252,9 @@ export default function MainPage() {
                                 </div>
                             </div>
                             <div onClick={() => {
-                                setAmountBetted(amountBetted * 2)
-                                setAmountReceived((amountBetted * 2) * multiplier)
+                                const newBettedAmount = amountBetted * 2;
+                                setAmountBetted(newBettedAmount);
+                                setAmountReceived(formatNumber(newBettedAmount * multiplier)); // Atualize amountReceived corretamente
                             }}>
                                 <h2>2X</h2>
                             </div>
@@ -259,11 +282,15 @@ export default function MainPage() {
 
                         <div
                             style={{
-                                cursor: !isLogged || isFlipping ? 'not-allowed' : 'pointer', // Set cursor style conditionally
-                                backgroundColor: !isLogged || isFlipping && 'rgb(150, 64, 78)', // Set background color conditionally
+                                cursor: !isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance
+                                ? 'not-allowed' : 'pointer', // Set cursor style conditionally
+                                backgroundColor: !isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance 
+                                && 'rgb(150, 64, 78)', // Set background color conditionally
                             }}
                             title={!isLogged ? "Você precisa estar logado para acessar esta área" : ""}
-                            onClick={!isLogged ? null : () => flipCoin()}
+                            onClick={!isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance 
+                                ? null 
+                                : () => flipCoin()}
                         >
                             <h1>GIRAR MOEDA</h1>
                         </div>
