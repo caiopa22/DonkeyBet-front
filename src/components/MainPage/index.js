@@ -4,6 +4,7 @@ import RegisterComponent from "../RegisterComponent";
 import LoginComponent from "../LoginComponent";
 import axios from "axios";
 import AlertBox from "../AlertBox";
+import BetHistoryPage from "../BetHistoryPage";
 
 
 export default function MainPage() {
@@ -15,12 +16,16 @@ export default function MainPage() {
 
     //General usestate's
     const [isLogged, setIsLogged] = useState(false);
-    const [selectedGame, setSelectedGame] = useState('coinflip');
+    const [selectedBody, setSelectedBody] = useState('coinflip');
     const [amountBetted, setAmountBetted] = useState(0.00);
     const [amountReceived, setAmountReceived] = useState(0.00)
     const [multiplier, setMultiplier] = useState(2)
     const [openRegisterComponent, setOpenRegisterComponent] = useState(false);
     const [openLoginComponent, setOpenLoginComponent] = useState(false);
+    const [openProfileDropdown, setOpenProfileDropdown] = useState(false)
+
+    const [selectedCoinSide, setSelectedCoinSide] = useState('silver')
+    const [isFlipping, setIsFlipping] = useState(false);
 
     // User profile usestate
     const [profile, setProfile] = useState({
@@ -34,17 +39,14 @@ export default function MainPage() {
     })
 
 
-    const [selectedCoinSide, setSelectedCoinSide] = useState('silver')
-    const [isFlipping, setIsFlipping] = useState(false);
-
     useEffect(() => {
         handleAmountReceived(amountBetted, multiplier);
     }, [amountBetted, multiplier]);
 
     useEffect(() => {
-        if (localStorage.getItem("userId") != null) {
+        if (sessionStorage.getItem("userId") != null) {
 
-            let userId = localStorage.getItem("userId")
+            let userId = sessionStorage.getItem("userId")
 
             axios.get(`http://localhost:8080/users/${userId}`)
                 .then(response => {
@@ -64,9 +66,6 @@ export default function MainPage() {
         }
     }, [])
 
-    useEffect(() => {
-        console.log("amountBetted :", amountBetted)
-    }, [amountBetted])
 
     const handleCoinSideChange = (side) => {
         setIsFlipping(true);
@@ -121,7 +120,41 @@ export default function MainPage() {
             <div className="logged-header">
                 <img src="imgs/plus-icon.png" />
                 <h1>R$ {formatNumber(profile.balance)}</h1>
-                <img src="imgs/profile-pic.png" />
+                <img src="imgs/profile-pic.png" 
+                onClick={() => setOpenProfileDropdown(!openProfileDropdown)}
+                />
+
+                <section
+                style={{
+                    opacity: openProfileDropdown ? '1' : '0',
+                    visibility: openProfileDropdown ? 'visible' : 'hidden'
+                }}
+                
+                >
+                    <div>
+                        <img src="imgs/profile-pic.png" />
+                        <div>
+                            <h1>Editar perfil</h1>
+                            <p>./{profile.name}</p>
+                        </div>
+                    </div>
+                    <div
+                    onClick={() => {
+                        setSelectedBody("bethistory")
+                        setOpenProfileDropdown(false)
+                    }}
+                    >
+                        <img src="imgs/history-icon.png" />
+                        <h1>Ver histórico de apostas</h1>
+                    </div>
+                    <div onClick={() => {
+                        sessionStorage.removeItem("userId")
+                        window.location.reload();
+                    }}>
+                        <img src="imgs/leave-icon.png" />
+                        <h1>Sair</h1>
+                    </div>
+                </section>
             </div>
         )
     }
@@ -167,7 +200,7 @@ export default function MainPage() {
         }
 
         function flipCoin() {
-            
+
             setIsFlipping(true);
             profile.balance = parseFloat(profile.balance) - parseFloat(amountBetted);
 
@@ -283,13 +316,13 @@ export default function MainPage() {
                         <div
                             style={{
                                 cursor: !isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance
-                                ? 'not-allowed' : 'pointer', // Set cursor style conditionally
-                                backgroundColor: !isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance 
-                                && 'rgb(150, 64, 78)', // Set background color conditionally
+                                    ? 'not-allowed' : 'pointer', // Set cursor style conditionally
+                                backgroundColor: !isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance
+                                    && 'rgb(150, 64, 78)', // Set background color conditionally
                             }}
                             title={!isLogged ? "Você precisa estar logado para acessar esta área" : ""}
-                            onClick={!isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance 
-                                ? null 
+                            onClick={!isLogged || isFlipping || amountBetted == 0 || amountBetted > profile.balance
+                                ? null
                                 : () => flipCoin()}
                         >
                             <h1>GIRAR MOEDA</h1>
@@ -321,6 +354,12 @@ export default function MainPage() {
         );
     }
 
+
+    function handleRoutes() {
+        if (selectedBody === 'coinflip') { return coinflipGame() }
+        if (selectedBody === 'bethistory') { return <BetHistoryPage /> }
+    }
+
     return (
         <>
             <AlertBox setShowAlertBox={setShowAlertBox} showAlertBox={showAlertBox} isAnError={isAnError} alertMessage={alertMessage} />
@@ -349,7 +388,13 @@ export default function MainPage() {
                     <div>
                         <h1>Selecionar jogo</h1>
                         <ul>
-                            <li>
+                            <li
+                                style={{
+                                    borderRight: selectedBody === 'coinflip' ? '0.2vw solid red' : null,
+                                    borderRadius: selectedBody === 'coinflip' ? '0.25vw 0 0 0.25vw' : null
+                                }}
+                                onClick={() => setSelectedBody('coinflip')}
+                            >
                                 <img src="/imgs/coin-icon.png" />
                                 <p>Coin flip</p>
                             </li>
@@ -397,7 +442,7 @@ export default function MainPage() {
                     </div>
                 </div>
                 <div className="container-game">
-                    {selectedGame === 'coinflip' ? coinflipGame() : (<></>)}
+                    {handleRoutes(selectedBody)}
                 </div>
             </main>
         </>

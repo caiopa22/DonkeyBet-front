@@ -1,0 +1,74 @@
+.bet-history-page-container{
+    width: 60%;
+    background-color: #2D3F52;
+    padding: 2vw;
+    border-radius: 0.5vw;
+    height: 35vw;
+
+    >section:nth-of-type(1){
+        display: flex;        
+        flex-direction: column;
+        gap: 1.5vw;
+
+        h1 {
+            font: bolder 1.5vw "Sofia Sans";
+            color: white;
+        }
+
+        >div:nth-of-type(1){
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1vw;
+            max-height: 30vw;
+            overflow-y: auto;
+        }
+    }
+}
+
+.default-bet-view-container {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+
+    label {
+        font: bold 0.9vw "Sofia Sans";
+        color: white;
+        width: 98%;
+    }
+
+    >div:nth-of-type(1){
+        border-radius: 0.5vw;
+        background-color: #1A242D;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1vw 2vw;
+        width: 90%;
+
+        h1 {
+            font: bolder 1.15vw "Sofia Sans";
+        }
+
+        h2 {
+            font: normal 0.9vw "Sofia Sans";
+            color: white;
+        }
+
+        p {
+            font: bolder 0.9vw "Sofia Sans";
+            color: white;
+        }
+
+        >div:nth-of-type(1){
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+    }
+}

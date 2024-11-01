@@ -141,7 +141,7 @@ export default function RegisterComponent({ setOpenRegisterComponent, openRegist
             axios.post("http://localhost:8080/users", dataToSend)
                 .then(response => {
                     const user = response.data
-                    localStorage.setItem("userId", user.id)
+                    sessionStorage.setItem("userId", user.id)
                     window.location.reload();
                     setOpenRegisterComponent(!openRegisterComponent)
                 })

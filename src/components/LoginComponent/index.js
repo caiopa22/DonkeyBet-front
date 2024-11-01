@@ -45,7 +45,7 @@ export default function LoginComponent({ openLoginComponent, setOpenLoginCompone
             axios.post("http://localhost:8080/users/login", loginData)
             .then(response => {
                 const user = response.data
-                localStorage.setItem("userId", user.id)
+                sessionStorage.setItem("userId", user.id)
                 window.location.reload();
                 setOpenLoginComponent(!openLoginComponent)
 
