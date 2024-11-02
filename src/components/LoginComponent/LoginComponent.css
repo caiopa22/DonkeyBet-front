@@ -38,6 +38,13 @@
                 strong {
                     font-weight: normal;
                     color: #F12C4C;
+                    transition: 0.25s;
+
+                    &:hover {
+                        cursor: pointer;
+                        color: #814650;
+                        transition: 0.25s;
+                    }
                 }
             }
         }

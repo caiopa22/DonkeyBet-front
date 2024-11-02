@@ -5,7 +5,7 @@ import LoginComponent from "../LoginComponent";
 import axios from "axios";
 import AlertBox from "../AlertBox";
 import BetHistoryPage from "../BetHistoryPage";
-
+import EditProfilePage from "../EditProfilePage";
 
 export default function MainPage() {
 
@@ -14,15 +14,22 @@ export default function MainPage() {
     const [alertMessage, setAlertMessage] = useState('')
     const [isAnError, setIsAnError] = useState(false)
 
-    //General usestate's
     const [isLogged, setIsLogged] = useState(false);
+
+    //General usestate's
     const [selectedBody, setSelectedBody] = useState('coinflip');
     const [amountBetted, setAmountBetted] = useState(0.00);
     const [amountReceived, setAmountReceived] = useState(0.00)
+    const [amountToAdd, setAmountToAdd] = useState(0.00)
     const [multiplier, setMultiplier] = useState(2)
+
+    // Open components usestate's
+    const [openAddCashContainer, setOpenAddCashContainer] = useState(false)
     const [openRegisterComponent, setOpenRegisterComponent] = useState(false);
     const [openLoginComponent, setOpenLoginComponent] = useState(false);
     const [openProfileDropdown, setOpenProfileDropdown] = useState(false)
+
+
 
     const [selectedCoinSide, setSelectedCoinSide] = useState('silver')
     const [isFlipping, setIsFlipping] = useState(false);
@@ -67,13 +74,12 @@ export default function MainPage() {
     }, [])
 
 
-    const handleCoinSideChange = (side) => {
-        setIsFlipping(true);
-        setTimeout(() => {
-            setSelectedCoinSide(side);
-            setIsFlipping(false);
-        }, 3000);
-    };
+    function handleRoutes() {
+        if (selectedBody === 'coinflip') { return coinflipGame() }
+        if (selectedBody === 'bethistory') { return <BetHistoryPage /> }
+        if (selectedBody === 'editprofile') { return <EditProfilePage /> }
+
+    }
 
     function handleAmountBetted(e) {
         const value = parseFloat(e.target.value.replace(/[,.]/g, '')) || 0.00; // Ensure it's a number
@@ -81,6 +87,13 @@ export default function MainPage() {
 
         setAmountBetted(bettedValue);
         handleAmountReceived(bettedValue, multiplier); // Update received amount whenever betted value changes
+    }
+
+    function handleAmountToAdd(e) {
+        const value = parseFloat(e.target.value.replace(/[,.]/g, '')) || 0.00; // Ensure it's a number
+        const bettedValue = value / 100;
+
+        setAmountToAdd(bettedValue);
     }
 
     function handleMultiplier(e) {
@@ -102,6 +115,21 @@ export default function MainPage() {
         }).format(number);
     }
 
+    function updateUserBalance(amount) {
+        const data = {
+            "id": profile.id,
+            "amount": amount
+        }
+
+        axios.put(`http://localhost:8080/users/balance`, data)
+            .then(response => {
+                console.log("Resposta balance : ", response.status)
+            })
+            .catch(error => {
+                console.log("Erro ao fazer a requisição de apostas :", error.message)
+            })
+    }
+
     const loginHeader = () => {
         return (
             <div className="login-header">
@@ -118,31 +146,36 @@ export default function MainPage() {
     const loggedHeader = () => {
         return (
             <div className="logged-header">
-                <img src="imgs/plus-icon.png" />
+                <img src="imgs/plus-icon.png" onClick={() => setOpenAddCashContainer(!openAddCashContainer)} />
                 <h1>R$ {formatNumber(profile.balance)}</h1>
-                <img src="imgs/profile-pic.png" 
-                onClick={() => setOpenProfileDropdown(!openProfileDropdown)}
+                <img src="imgs/profile-pic.png"
+                    onClick={() => setOpenProfileDropdown(!openProfileDropdown)}
                 />
 
                 <section
-                style={{
-                    opacity: openProfileDropdown ? '1' : '0',
-                    visibility: openProfileDropdown ? 'visible' : 'hidden'
-                }}
-                
+                    style={{
+                        opacity: openProfileDropdown ? '1' : '0',
+                        visibility: openProfileDropdown ? 'visible' : 'hidden'
+                    }}
+
                 >
-                    <div>
+                    <div
+                        onClick={() => {
+                            setOpenProfileDropdown(false)
+                            setSelectedBody('editprofile')
+                        }}
+                    >
                         <img src="imgs/profile-pic.png" />
-                        <div>
+                        <div >
                             <h1>Editar perfil</h1>
                             <p>./{profile.name}</p>
                         </div>
                     </div>
                     <div
-                    onClick={() => {
-                        setSelectedBody("bethistory")
-                        setOpenProfileDropdown(false)
-                    }}
+                        onClick={() => {
+                            setSelectedBody("bethistory")
+                            setOpenProfileDropdown(false)
+                        }}
                     >
                         <img src="imgs/history-icon.png" />
                         <h1>Ver histórico de apostas</h1>
@@ -182,39 +215,25 @@ export default function MainPage() {
 
         }
 
-        function updateUserBalance(amount) {
-            const data = {
-                "id": profile.id,
-                "amount": amount
-            }
 
-            axios.put(`http://localhost:8080/users/balance`, data)
-                .then(response => {
-                    console.log("Resposta balance : ", response.status)
-                })
-                .catch(error => {
-                    console.log("Erro ao fazer a requisição de apostas :", error.message)
-                })
-
-
-        }
 
         function flipCoin() {
 
             setIsFlipping(true);
             profile.balance = parseFloat(profile.balance) - parseFloat(amountBetted);
 
+
             setTimeout(() => {
                 let userNumber = Math.floor((Math.random() * 10) + 1);
                 let odds = Number.parseInt(multiplier) + 3;
 
                 if (userNumber >= odds) {
-                    handleCoinSideChange(selectedCoinSide);
+                    setSelectedCoinSide(selectedCoinSide);
 
-                    const win = parseFloat(profile.balance) + parseFloat(amountReceived)
+                    const win = parseFloat(profile.balance) + parseFloat(amountReceived.replace(".", "").replace(",", "."));
                     profile.balance = win;
 
-                    registerBet(amountBetted, odds, parseFloat(amountReceived.replace(",", ".")))
+                    registerBet(amountBetted, odds, parseFloat(amountReceived.replace(".", "").replace(",", ".")))
                     updateUserBalance(win);
 
                     setIsAnError(false);
@@ -224,9 +243,9 @@ export default function MainPage() {
 
                 } else {
                     if (selectedCoinSide === 'silver') {
-                        handleCoinSideChange('gold');
+                        setSelectedCoinSide('gold');
                     } else {
-                        handleCoinSideChange('silver');
+                        setSelectedCoinSide('silver');
                     }
 
                     registerBet(amountBetted, odds, amountBetted - (amountBetted * 2))
@@ -345,7 +364,7 @@ export default function MainPage() {
                                 </div>
                             </div>
                             <div>
-                                <p>Cara ou Coroa? O tradicional jogo chega ao mundo digital no emocionante DonkeyBet Coin Flip! Embarque numa jornada ao espaço sideral com gráficos  coloridos e adivinhe o resultado de até dez moedas! Criado pela própria  Blaze, o jogo alia você a um carismático cão astronauta que não deixa  nada a desejar em relação a ícones caninos da profissão como os russos  Laika e Cosmo! Aproveite a interface intuitiva e simples desta experiência! </p>
+                                <p>Cara ou Coroa? O tradicional jogo chega ao mundo digital no emocionante DonkeyBet Coin Flip! Embarque numa jornada ao espaço sideral com gráficos  coloridos e adivinhe o resultado de até dez moedas! Criado pela Blaze, o jogo alia você a um carismático cão astronauta que não deixa nada a desejar em relação a ícones caninos da profissão como os russos  Laika e Cosmo! Aproveite a interface intuitiva e simples desta experiência! </p>
                             </div>
                         </div>
                     </div>
@@ -354,10 +373,36 @@ export default function MainPage() {
         );
     }
 
+    const addCashContainer = () => {
 
-    function handleRoutes() {
-        if (selectedBody === 'coinflip') { return coinflipGame() }
-        if (selectedBody === 'bethistory') { return <BetHistoryPage /> }
+        return (
+            <main className="add-cash-container">
+                <form>
+                    <div>
+                        <h1>Adicionar fundos</h1>
+                        <p>Digite a quantidade que deseja adicionar abaixo.</p>
+                    </div>
+                    <div>
+                        <h1>R$ </h1>
+                        <input
+                            value={formatNumber(amountToAdd)}
+                            onChange={handleAmountToAdd}
+                            min="0.01"
+                        />
+                    </div>
+                    <div onClick={() => {
+                        updateUserBalance(profile.balance + amountToAdd)
+                        setOpenAddCashContainer(!openAddCashContainer)
+                        window.location.reload();
+                    }}>
+                        <h1>Adicionar</h1>
+                    </div>
+                    <div >
+                        <img src="/imgs/x-icon.png" onClick={() => setOpenAddCashContainer(!openAddCashContainer)} />
+                    </div>
+                </form>
+            </main>
+        );
     }
 
     return (
@@ -366,20 +411,26 @@ export default function MainPage() {
             {openLoginComponent ? <LoginComponent
                 setOpenLoginComponent={setOpenLoginComponent}
                 openLoginComponent={openLoginComponent}
+                setOpenRegisterComponent={setOpenRegisterComponent}
                 setProfile={setProfile}
                 setIsLogged={setIsLogged}
             /> : null}
             {openRegisterComponent ? <RegisterComponent
                 setOpenRegisterComponent={setOpenRegisterComponent}
                 openRegisterComponent={openRegisterComponent}
+                setOpenLoginComponent={setOpenLoginComponent}
                 setProfile={setProfile}
                 setIsLogged={setIsLogged}
             /> : null}
+            {openAddCashContainer ? addCashContainer() : null}
             <header>
-                <div>
+                <div
+                    onClick={() => {
+                        setSelectedBody('coinflip')
+                        setOpenProfileDropdown(false)
+                    }}>
                     <img src="/imgs/donkeybet-logo.png" />
                     <h1>DonkeyBet</h1>
-                    {isLogged && (<h2>Bem vindo, <strong>{profile.name.split(' ')[0]}</strong>.</h2>)}
                 </div>
                 {isLogged ? loggedHeader() : loginHeader()}
             </header>
@@ -393,7 +444,10 @@ export default function MainPage() {
                                     borderRight: selectedBody === 'coinflip' ? '0.2vw solid red' : null,
                                     borderRadius: selectedBody === 'coinflip' ? '0.25vw 0 0 0.25vw' : null
                                 }}
-                                onClick={() => setSelectedBody('coinflip')}
+                                onClick={() => {
+                                    setSelectedBody('coinflip')
+                                    setOpenProfileDropdown(false)
+                                }}
                             >
                                 <img src="/imgs/coin-icon.png" />
                                 <p>Coin flip</p>
@@ -436,7 +490,7 @@ export default function MainPage() {
                             </li>
                             <li>
                                 <img src="imgs/dev-icon.png" />
-                                <p>Elias</p>
+                                <p>Elias de Souza</p>
                             </li>
                         </ul>
                     </div>

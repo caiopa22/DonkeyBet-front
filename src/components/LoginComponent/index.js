@@ -3,7 +3,7 @@ import "./LoginComponent.css"
 import axios from "axios";
 import AlertBox from "../AlertBox";
 
-export default function LoginComponent({ openLoginComponent, setOpenLoginComponent, setProfile, setIsLogged }) {
+export default function LoginComponent({ openLoginComponent, setOpenLoginComponent , setOpenRegisterComponent }) {
 
     // Alertbox usestates
     const [showAlertBox, setShowAlertBox] = useState(false)
@@ -90,7 +90,12 @@ export default function LoginComponent({ openLoginComponent, setOpenLoginCompone
             <form>
                 <div>
                     <h1>Login</h1>
-                    <p>Já possui uma conta? <strong>Cadastre-se</strong></p>
+                    <p>Já possui uma conta? <strong
+                    onClick={() => {
+                        setOpenLoginComponent(false)
+                        setOpenRegisterComponent(true)
+                    }}
+                    >Cadastre-se</strong></p>
                 </div>
                 <div>
                     {defaultInput("E-mail", "text", "email", "Digite seu e-mail aqui")}

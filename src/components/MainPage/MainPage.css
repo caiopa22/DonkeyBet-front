@@ -22,15 +22,11 @@ header {
             color: white;
             font: normal 1.5vw "Sofia Sans";
         }
-        
-        h2 {
-            color: white;
-            font: normal 1.25vw "Sofia Sans";
 
-            strong {
-                color: #F12C4C;
-            }
+        &:hover {
+            cursor: pointer;
         }
+        
     }
 
     .login-header {
@@ -76,7 +72,6 @@ header {
 
     .logged-header {
         display: flex;
-
         position: relative;
         justify-content: center;
         align-items: center;
@@ -148,11 +143,13 @@ header {
                     flex-direction: column;
                     gap: 0;
                     padding: 0;
+                    align-items: flex-start;
                     
                     &:hover {
                         background-color: rgba(255, 255, 255, 0);
                     }
                 }
+
                 img {
                     width: 2vw;
                     height: 2vw;
@@ -231,6 +228,7 @@ header {
                 font-size: 1.4vw;
                 font-weight: 600;
             }
+            
 
         }
 
@@ -238,6 +236,11 @@ header {
 
             ul li {
                 padding: 0;
+
+                &:hover {
+                    background-color: #0F1923;
+                    cursor: default;
+                }
             }
 
             h1 {
@@ -287,7 +290,7 @@ header {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 2.5vw;
+                    gap: 4vw;
 
                     h1 {
                         font: bolder 1.5vw "Sofia Sans";
@@ -323,6 +326,7 @@ header {
                             height: 2vw;
                             width: 7vw;
                             background-color: white;
+
                         }
 
                         >div:first-child {
@@ -331,6 +335,7 @@ header {
 
 
                             &:hover {
+                                transform: scale(1.05);
                                 transition: 0.25s;
                                 cursor: pointer;
                                 background-color: #636679;
@@ -342,6 +347,7 @@ header {
                             transition: 0.25s;
 
                             &:hover {
+                                transform: scale(1.05);
                                 transition: 0.25s;
                                 cursor: pointer;
                                 background-color: #9c7325;
@@ -434,13 +440,20 @@ header {
 
                         >:nth-of-type(1) {
                             display: flex;
-                            gap: 0.25vw;
-
-                            /* INPUT RADIO CSS AQUI */
+                            gap: 0.5vw;
 
                             h2 {
                                 font: bolder 0.9vw "Sofia Sans";
                                 color: white;
+                            }
+
+                            input {
+                                height: 1vw;
+                                width: 10vw;
+
+                                &:hover {
+                                    cursor: pointer;
+                                }
                             }
                         }
 
@@ -578,6 +591,126 @@ header {
     }
 }
 
+.add-cash-container {
+    z-index: 2;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px); 
+
+    form {
+        position: relative;
+        background-color: #1A242D;
+        padding: 3vw 4vw;
+        border-radius: 0.5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1.5vw;
+
+        /* Top div */
+        >div:nth-of-type(1){
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            h1 {
+                font: bolder 2vw "Sofia Sans";
+                color: white;
+            }
+
+            p {
+                font: normal 1.25vw "Sofia Sans";
+                color: white;
+
+                strong {
+                    font-weight: normal;
+                    color: #F12C4C;
+                }
+            }
+        }
+
+        /* Inputs div */
+        >div:nth-of-type(2){
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+
+            input {
+                background: none;
+                border: 0.1vw solid #ABABAB;
+                height: 2.5vw;
+                border-radius: 0.25vw;
+                text-indent: 0.5vw;
+        
+                color: #ffffff;
+                font: 400 0.9vw "Sofia Sans";
+        
+        
+                &:focus {
+                    border: 0.1vw solid #F12C4C;
+                    outline: 0.1vw solid #F12C4C;
+                    box-shadow: none;
+                }
+            }
+
+            h1 {
+                font: bolder 1vw "Sofia Sans";
+                color: white;
+            }
+        }
+
+        >div:nth-of-type(3){
+            background-color: #F12C4C;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 10vw;
+            padding: 0.75vw;
+            border-radius: 0.5vw;
+            transition: 0.25s;
+
+            h1 {
+                font: bolder 1.25vw "Sofia Sans";
+                color: white;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: #814650;
+
+                transition: 0.25s;
+            }
+        }
+
+
+        >div:nth-of-type(4){
+            position: absolute;
+            top: 1vw;
+            right: 1vw;
+            cursor: pointer;
+            transition: 0.25s;
+
+            img {
+                transition: 0.25s;
+                width: 1.25vw;
+                height: 1.25vw;
+
+                &:hover {
+                    transition: 0.25s;
+                    transform: scale(1.1);
+                }
+            }
+
+
+        }
+    }
+}
 
 
 @keyframes flip {

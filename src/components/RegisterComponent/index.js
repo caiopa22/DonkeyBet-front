@@ -3,7 +3,7 @@ import axios from "axios";
 import "./RegisterComponent.css";
 import AlertBox from "../AlertBox";
 
-export default function RegisterComponent({ setOpenRegisterComponent, openRegisterComponent, setProfile, setIsLogged }) {
+export default function RegisterComponent({ setOpenRegisterComponent, openRegisterComponent, setOpenLoginComponent}) {
 
     // Alertbox usestates
     const [showAlertBox, setShowAlertBox] = useState(false)
@@ -205,7 +205,10 @@ export default function RegisterComponent({ setOpenRegisterComponent, openRegist
             <form>
                 <div>
                     <h1>Cadastro</h1>
-                    <p>Já possui uma conta? <strong>Login</strong></p>
+                    <p>Já possui uma conta? <strong onClick={() => {
+                        setOpenRegisterComponent(false)
+                        setOpenLoginComponent(true)
+                    }}>Login</strong></p>
                 </div>
                 <div>
                     {defaultInput("Nome", "text", "name", "Digite seu nome aqui")}
